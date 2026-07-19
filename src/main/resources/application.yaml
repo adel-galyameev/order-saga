@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: order-saga
+  datasource:
+    url: jdbc:postgresql://${DB_HOST_PORT:localhost:5432}/orders
+    username: ${DB_USER:orders}
+    password: ${DB_PASSWORD:orders}
+    driver-class-name: org.postgresql.Driver
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+        linger.ms: 10
+        batch.size: 50000
+    consumer:
+      group-id: order-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+      auto-offset-reset: earliest
+
+order:
+  kafka:
+    topic:
+      order-created-topic: ${ORDER_CREATED_TOPIC:order-created}
+      cancel-order-command-topic: ${CANCEL_ORDER_COMMAND_TOPIC:cancel-order-command}
+      cancel-order-event-topic: ${CANCEL_ORDER_EVENT_TOPIC:cancel-order-event}
+      billing-event-topic: ${BILLING_EVENT_TOPIC:billing-event}
+      product-event-topic: ${PRODUCT_EVENT_TOPIC:product-event}
+      product-command-topic: ${PRODUCT_COMMAND_TOPIC:product-command}
+      unreserve-product-command-topic: ${UNRESERVE_PRODUCT_COMMAND_TOPIC:unreserve-product-command}
+      unreserve-product-event-topic: ${UNRESERVE_PRODUCT_EVENT_TOPIC:unreserve-product-event}
+      reserve-courier-event-topic: ${RESERVE_COURIER_EVENT_TOPIC:reserve-courier-event}
+      reserve-courier-command-topic: ${RESERVE_COURIER_COMMAND_TOPIC:reserve-courier-command}
+
+

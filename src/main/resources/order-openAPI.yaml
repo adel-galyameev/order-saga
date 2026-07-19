@@ -1,0 +1,174 @@
+openapi: "3.0.2"
+info:
+  title: order API
+  version: '1.0.0'
+  description: |
+    описание REST API сервиса billing
+  contact:
+    name: 'Галямеев Адель'
+    email: 'adelbabai37@gmail.com'
+servers:
+  - url: 'http://arch.homework'
+    description: 'arch.homework'
+paths:
+  /order:
+    post:
+      operationId: createOrder
+      tags:
+        - OrderController
+      summary: 'Запрос на создание заказа'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderRq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderRs'
+  /order/{orderId}:
+    get:
+      operationId: getOrder
+      tags:
+        - OrderController
+      summary: 'Посмотреть заказ'
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderRs'
+  /order/{orderId}/history:
+    get:
+      operationId: getOrderHistory
+      tags:
+        - OrderController
+      summary: 'Посмотреть историю заказа'
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderHistoryRs'
+components:
+  schemas:
+    status:
+      type: string
+      enum:
+        - CREATED
+        - PROCESSED
+        - REJECT
+        - PAID
+        - COMPLETED
+        - REFUNDED
+    orderRq:
+      description: 'Создание заказа'
+      type: object
+      required:
+        - userId
+        - productId
+        - productQuantity
+        - price
+      properties:
+        userId:
+          type: string
+          format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+          description: 'Идентификатор пользователя'
+        productId:
+          type: string
+          format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+          description: 'Идентификатор продукта'
+        productQuantity:
+          type: integer
+          example: 10
+          description: 'Количество товара'
+          minimum: 1
+        price:
+          type: number
+          example: 1000
+          description: 'Стоимость заказа'
+          minimum: 0
+    orderRs:
+      description: 'Создание заказа'
+      type: object
+      required:
+        - id
+        - userId
+        - productId
+        - productQuantity
+        - price
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+          description: 'Идентификатор заказа'
+        userId:
+          type: string
+          format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+          description: 'Идентификатор пользователя'
+        productId:
+          type: string
+          format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+          description: 'Идентификатор продукта'
+        productQuantity:
+          type: integer
+          example: 10
+          description: 'Количество товара'
+          minimum: 1
+        price:
+          type: number
+          example: 1000
+          description: 'Стоимость заказа'
+          minimum: 0
+        status:
+          $ref: '#/components/schemas/status'
+          description: 'Статус заказа'
+    orderHistoryRs:
+      description: 'История смены статусов'
+      required:
+        - orderId
+        - status
+        - createdAt
+      properties:
+        orderId:
+          type: string
+          format: uuid
+          example: 'f42863b4-19c2-4597-ab68-a355ab8bb41c'
+          description: 'Идентификатор заказа'
+        status:
+          $ref: '#/components/schemas/status'
+          description: 'Статус заказа'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-06-16T14:30:00Z'
+          description: 'Дата и время записи в историю'
