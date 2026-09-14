@@ -28,6 +28,9 @@ spring:
       auto-offset-reset: earliest
 
 order:
+  user:
+    name: adel
+    email: adel@adel.ru
   kafka:
     topic:
       order-created-topic: ${ORDER_CREATED_TOPIC:order-created}
