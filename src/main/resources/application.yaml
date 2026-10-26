@@ -18,7 +18,7 @@ spring:
         linger.ms: 10
         batch.size: 50000
     consumer:
-      group-id: order-service
+      group-id: order
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
