@@ -20,7 +20,6 @@ public class OrderHistoryService {
     private final OrderHistoryRepository orderHistoryRepository;
     private final OrderHistoryMapper orderHistoryMapper;
 
-    @Transactional(readOnly = true)
     public List<OrderHistoryRs> getOrderHistory(UUID orderId) {
         List<OrderHistory> history = orderHistoryRepository.findByOrderIdOrderByCreatedAtAsc(orderId);
 

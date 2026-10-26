@@ -33,7 +33,6 @@ public class OrderService {
         return orderMapper.toResponse(order);
     }
 
-    @Transactional(readOnly = true)
     public OrderRs getOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
